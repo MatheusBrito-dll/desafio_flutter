@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
           logoSvg,
           color: Colors.white,
           height: 20,
+          width: 200,
         ),
       ),
       body: Padding(

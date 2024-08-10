@@ -36,7 +36,7 @@ class AssetsController extends GetxController {
     Map<String, HierarchyNode> locationMap = {};
     Map<String, HierarchyNode> assetMap = {};
 
-    // Criar nós de localização
+    //Criar nós de localização
     for (var location in locations) {
       locationMap[location.id] = HierarchyNode(
         id: location.id,
@@ -46,7 +46,7 @@ class AssetsController extends GetxController {
       );
     }
 
-    // Criar nós de ativos
+    //Criar nós de ativos
     for (var asset in assets) {
       assetMap[asset.id] = HierarchyNode(
         id: asset.id,
@@ -58,7 +58,7 @@ class AssetsController extends GetxController {
       );
     }
 
-    // Adicionar ativos aos seus respectivos locais ou pais
+    //Adicionar ativos aos seus respectivos locais ou pais
     for (var asset in assets) {
       if (asset.locationId != null && locationMap.containsKey(asset.locationId)) {
         locationMap[asset.locationId]!.children.add(assetMap[asset.id]!);
@@ -67,7 +67,7 @@ class AssetsController extends GetxController {
       }
     }
 
-    // Construir a hierarquia de locais
+    //Construir a hierarquia de locais
     List<HierarchyNode> rootNodes = [];
     for (var location in locations) {
       if (location.parentId == null) {
@@ -77,7 +77,7 @@ class AssetsController extends GetxController {
       }
     }
 
-    // Adicionar ativos sem localização ou pai diretamente à raiz
+    //Adicionar ativos sem localização ou pai diretamente à raiz
     for (var asset in assets) {
       if (asset.locationId == null && asset.parentId == null) {
         rootNodes.add(assetMap[asset.id]!);

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../controllers/assets_controller.dart';
 import '../models/hierarchy_node.dart';
-import 'asset_node_widget.dart';
 import 'package:get/get.dart';
 
 class AssetTreeView extends StatelessWidget {
@@ -12,24 +11,99 @@ class AssetTreeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return ListView.builder(
-          itemCount: nodes.length,
-          itemBuilder: (context, index) {
-            return ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: constraints.maxWidth,
-                maxWidth: constraints.maxWidth,
+    // Definindo uma largura fixa para a TreeView
+    double treeViewWidth = 800.0; // Ajuste conforme necessário
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Container(
+        width: treeViewWidth,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: nodes.map((node) => AssetNodeWidget(node: node, controller: controller)).toList(),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AssetNodeWidget extends StatelessWidget {
+  final HierarchyNode node;
+  final AssetsController controller;
+  final double indent;
+
+  AssetNodeWidget({required this.node, required this.controller, this.indent = 0.0});
+
+  Widget _getIcon(HierarchyNode node) {
+    if (node.isLocation) {
+      return Image.asset('assets/images/location.png', width: 24, height: 24);
+    } else if (node.sensorType != null) {
+      return Image.asset('assets/images/sub_assets.png', width: 24, height: 24);
+    } else if (node.children.isNotEmpty) {
+      return Image.asset('assets/images/assets.png', width: 24, height: 24);
+    } else {
+      return Image.asset('assets/images/sub_assets.png', width: 24, height: 24);
+    }
+  }
+
+  Widget _getStatusIcon(HierarchyNode node) {
+    if (node.status == 'alert') {
+      return Icon(Icons.error, color: Colors.red, size: 16);
+    } else if (node.status == 'operating') {
+      return Icon(Icons.flash_on, color: Colors.green, size: 16);
+    } else {
+      return Container(); // Sem ícone de status
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(left: indent),
+      child: Obx(() {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: node.children.isNotEmpty
+                  ? IconButton(
+                icon: controller.isNodeExpanded(node.id)
+                    ? Icon(Icons.expand_less)
+                    : Icon(Icons.expand_more),
+                onPressed: () {
+                  controller.toggleNode(node.id);
+                },
+              )
+                  : SizedBox(width: 24),
+              title: Row(
+                children: [
+                  _getIcon(node),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      node.name,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  if (node.sensorType != null || node.status != null) ...[
+                    _getStatusIcon(node),
+                  ]
+                ],
               ),
-              child: AssetNodeWidget(
-                node: nodes[index],
-                controller: controller,
+            ),
+            if (controller.isNodeExpanded(node.id))
+              Column(
+                children: node.children
+                    .map((child) =>
+                    AssetNodeWidget(node: child, controller: controller, indent: indent + 16.0))
+                    .toList(),
               ),
-            );
-          },
+          ],
         );
-      },
+      }),
     );
   }
 }

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import '../controllers/assets_controller.dart';
 import '../models/hierarchy_node.dart';
-
+import 'package:get/get.dart';
 
 class AssetNodeWidget extends StatelessWidget {
   final HierarchyNode node;
@@ -29,7 +28,7 @@ class AssetNodeWidget extends StatelessWidget {
     } else if (node.status == 'operating') {
       return Icon(Icons.flash_on, color: Colors.green, size: 16);
     } else {
-      return Container(); // No status icon
+      return Container(); // Sem ícone de status
     }
   }
 
@@ -53,21 +52,28 @@ class AssetNodeWidget extends StatelessWidget {
                 },
               )
                   : SizedBox(width: 24),
-              title: Row(
-                children: [
-                  _getIcon(node),
-                  SizedBox(width: 8),
-                  Expanded(child: Text(node.name, overflow: TextOverflow.ellipsis)),
-                  if (node.sensorType != null || node.status != null) ...[
-                    _getStatusIcon(node),
-                  ]
-                ],
+              title: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _getIcon(node),
+                    SizedBox(width: 8),
+                    Text(
+                      node.name,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (node.sensorType != null || node.status != null) ...[
+                      _getStatusIcon(node),
+                    ]
+                  ],
+                ),
               ),
             ),
             if (controller.isNodeExpanded(node.id))
               Column(
                 children: node.children
-                    .map((child) => AssetNodeWidget(node: child, controller: controller, indent: indent + 16.0))
+                    .map((child) =>
+                    AssetNodeWidget(node: child, controller: controller, indent: indent + 16.0))
                     .toList(),
               ),
           ],

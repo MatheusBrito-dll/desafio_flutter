@@ -1,8 +1,12 @@
+
 import 'package:flutter/material.dart';
 import '../controllers/assets_controller.dart';
 import '../models/hierarchy_node.dart';
 import 'package:get/get.dart';
 
+//If the icons are bad, return this code D:
+
+/**
 class AssetNodeWidget extends StatelessWidget {
   final HierarchyNode node;
   final AssetsController controller;
@@ -24,11 +28,11 @@ class AssetNodeWidget extends StatelessWidget {
 
   Widget _getStatusIcon(HierarchyNode node) {
     if (node.status == 'alert') {
-      return Icon(Icons.error, color: Colors.red, size: 16);
+      return Icon(Icons.error, color: Colors.blue, size: 16);
     } else if (node.status == 'operating') {
-      return Icon(Icons.flash_on, color: Colors.green, size: 16);
+      return Icon(Icons.circle, color: Colors.blue, size: 16);
     } else {
-      return Container(); // Sem ícone de status
+      return Container();
     }
   }
 
@@ -52,28 +56,28 @@ class AssetNodeWidget extends StatelessWidget {
                 },
               )
                   : SizedBox(width: 24),
-              title: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    _getIcon(node),
-                    SizedBox(width: 8),
-                    Text(
-                      node.name,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (node.sensorType != null || node.status != null) ...[
-                      _getStatusIcon(node),
-                    ]
-                  ],
-                ),
+              title: Row(
+                mainAxisSize: MainAxisSize.min, // Ocupa apenas o espaço necessário
+                children: [
+                  _getIcon(node),
+                  SizedBox(width: 8), // Espaço entre o ícone e o texto
+                  Text(
+                    node.name,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(width: 8), // Espaço entre o texto e o ícone de status
+                  _getStatusIcon(node), // Ícone de status colado ao texto
+                ],
               ),
             ),
             if (controller.isNodeExpanded(node.id))
               Column(
                 children: node.children
-                    .map((child) =>
-                    AssetNodeWidget(node: child, controller: controller, indent: indent + 16.0))
+                    .map((child) => AssetNodeWidget(
+                  node: child,
+                  controller: controller,
+                  indent: indent + 16.0,
+                ))
                     .toList(),
               ),
           ],
@@ -81,4 +85,4 @@ class AssetNodeWidget extends StatelessWidget {
       }),
     );
   }
-}
+}**/

@@ -79,15 +79,17 @@ class AssetNodeWidget extends StatelessWidget {
               )
                   : SizedBox(width: 24),
               title: Row(
+                mainAxisSize: MainAxisSize.min, // Ocupa apenas o espaço necessário
                 children: [
                   _getIcon(node),
                   SizedBox(width: 8),
-                  Expanded(
+                  Flexible(
                     child: Text(
                       node.name,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
+                  SizedBox(width: 8), // Espaço entre o texto e o ícone de status
                   if (node.sensorType != null || node.status != null) ...[
                     _getStatusIcon(node),
                   ]
@@ -97,8 +99,11 @@ class AssetNodeWidget extends StatelessWidget {
             if (controller.isNodeExpanded(node.id))
               Column(
                 children: node.children
-                    .map((child) =>
-                    AssetNodeWidget(node: child, controller: controller, indent: indent + 16.0))
+                    .map((child) => AssetNodeWidget(
+                  node: child,
+                  controller: controller,
+                  indent: indent + 16.0,
+                ))
                     .toList(),
               ),
           ],
